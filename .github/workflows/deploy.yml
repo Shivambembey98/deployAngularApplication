@@ -35,10 +35,6 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./terraform  # Ensures Terraform state is properly stored
 
-      - name: Get Instance Public IP
-        run: |
-          echo "INSTANCE_PUBLIC_IP=$(terraform output -raw instance_public_ip)" >> $GITHUB_ENV
+      - name: Set Environment Variable
+        run: echo "instance_public_ip=$(terraform output -raw instance_public_ip)" >> $GITHUB_ENV
         working-directory: ./terraform
-
-      - name: Use Instance Public IP
-        run: echo "The deployed instance public IP is $INSTANCE_PUBLIC_IP"
