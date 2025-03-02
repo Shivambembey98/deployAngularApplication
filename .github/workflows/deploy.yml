@@ -63,7 +63,11 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
       - name: Add EC2 Host to Known Hosts
-        run: ssh-keyscan -H ${{ needs.terraform.outputs.PUBLIC_IP }} >> ~/.ssh/known_hosts
+        run: |
+          PUBLIC_IP=${{ needs.terraform.outputs.PUBLIC_IP }}
+          echo "EC2 Public IP: $PUBLIC_IP"
+          ssh-keyscan -H $PUBLIC_IP >> ~/.ssh/known_hosts
+
 
       - name: Install Docker & Deploy Angular App
         run: |
