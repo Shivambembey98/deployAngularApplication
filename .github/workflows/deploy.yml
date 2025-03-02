@@ -36,21 +36,21 @@ jobs:
         id: get-ip
         run: |
           echo "Fetching EC2 Public IP..."
-          
-          # Extract the correct IP address and remove any hidden characters
-          PUBLIC_IP=$(terraform output -raw instance_public_ip | tr -d '\r' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
-          
-          # Validate IP is not empty
-          if [[ -z "$PUBLIC_IP" ]]; then
-            echo "Error: EC2 Public IP is empty!" >&2
+      
+          # Extract the IP and clean up formatting issues
+          PUBLIC_IP=$(terraform output -raw instance_public_ip | tr -d '\r' | tr -d '\n')
+      
+          # Ensure the value is a valid IP before setting it
+          if [[ ! "$PUBLIC_IP" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+            echo "Error: Invalid EC2 Public IP: '$PUBLIC_IP'" >&2
             exit 1
           fi
       
-          # Set PUBLIC_IP as an environment variable
+          # Set as environment variable safely
           echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
-      
           echo "EC2 Public IP: $PUBLIC_IP"
         working-directory: ./terraform
+
 
 
 
