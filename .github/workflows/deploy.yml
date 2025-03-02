@@ -36,15 +36,5 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./terraform
 
-      - name: Save Terraform Output
-        id: save_output
-        run: |
-          terraform output -raw instance_public_ip > instance_public_ip.txt
-        working-directory: ./terraform
-
-      - name: Set Environment Variable
-        id: set_env
-        run: |
-          instance_public_ip=$(cat ./terraform/instance_public_ip.txt)
-          echo "instance_public_ip=${instance_public_ip}" >> $GITHUB_ENV
+      
 
