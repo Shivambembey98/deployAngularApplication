@@ -30,11 +30,15 @@ jobs:
       - name: Plan Terraform
         run: terraform plan
         working-directory: ./terraform
+        
 
       - name: Apply Terraform
         id: apply
         run: terraform apply -auto-approve
         working-directory: ./terraform
+
+      - name: checking something
+        run: terraform state show aws_instance.calculatorAngular | grep public_ip 
 
       - name: Get Instance Public IP
         run: |
