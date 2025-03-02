@@ -38,7 +38,13 @@ jobs:
         working-directory: ./terraform
 
       - name: checking something
-        run: terraform state show aws_instance.calculatorAngular | grep public_ip 
+        run: |
+          terraform refresh
+          terraform output instance_public_ip
+          terraform console
+          aws_instance.calculatorAngular.public_ip
+
+
 
       - name: Get Instance Public IP
         run: |
