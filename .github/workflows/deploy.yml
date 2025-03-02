@@ -38,10 +38,7 @@ jobs:
         working-directory: ./terraform
 
 
-      - name: Get Instance Public IP
-        run: |
-          INSTANCE_PUBLIC_IP=$(terraform output instance_public_ip | tr -d '"')
-          echo "Instance Public IP: $INSTANCE_PUBLIC_IP"
+
 
 
 
