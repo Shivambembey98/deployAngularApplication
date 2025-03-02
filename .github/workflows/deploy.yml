@@ -25,15 +25,16 @@ jobs:
 
       - name: Initialize Terraform
         run: terraform init
-        working-directory: ./terraform  # Ensure this matches your Terraform directory
+        working-directory: ./terraform
 
       - name: Plan Terraform
         run: terraform plan
-        working-directory: ./terraform  # Ensure Terraform runs in the correct directory
+        working-directory: ./terraform
 
       - name: Apply Terraform
+        id: apply
         run: terraform apply -auto-approve
-        working-directory: ./terraform  # Ensures Terraform state is properly stored
+        working-directory: ./terraform
 
       - name: Set Environment Variable
         run: echo "instance_public_ip=$(terraform output -raw instance_public_ip)" >> $GITHUB_ENV
