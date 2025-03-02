@@ -36,5 +36,11 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./terraform
 
+      - name: Get Instance Public IP
+        run: |
+          INSTANCE_PUBLIC_IP=$(terraform output -json | jq -r '.instance_public_ip.value')
+          echo "Instance Public IP: $INSTANCE_PUBLIC_IP"
+
+
       
 
