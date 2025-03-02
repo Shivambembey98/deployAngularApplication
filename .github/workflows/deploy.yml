@@ -35,6 +35,9 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./terraform
 
+      - name: Debug Terraform Output
+        run: terraform output  
+
       - name: Get EC2 Public IP
         run: |
           PUBLIC_IP=$(terraform output -raw public_ip 2>/dev/null || terraform output public_ip | tr -d '"')
