@@ -9,6 +9,8 @@ resource "aws_instance" "calculatorAngular" {
 
   # Attach existing security group
   vpc_security_group_ids = ["sg-0b6450d582b178cc2"] # Your actual Security Group ID
+  
+  associate_public_ip_address = true # Add this line
 
   tags = {
     Name = "calculatorAngular"
