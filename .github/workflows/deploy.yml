@@ -61,6 +61,7 @@ jobs:
 
 
 
+
       - name: Wait for EC2 to be Ready
         run: sleep 60  # Allow instance to initialize
 
