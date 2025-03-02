@@ -49,7 +49,7 @@ jobs:
             exit 1
           fi
       
-          # Set the PUBLIC_IP in GITHUB_ENV
+          # Set the PUBLIC_IP in GITHUB_ENV correctly
           echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
           echo "Valid EC2 Public IP: $PUBLIC_IP"
         working-directory: ./terraform
