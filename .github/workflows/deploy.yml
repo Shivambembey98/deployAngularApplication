@@ -37,14 +37,6 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./terraform
 
-      - name: checking something
-        run: |
-          terraform refresh
-          terraform output instance_public_ip
-          terraform console
-          aws_instance.calculatorAngular.public_ip
-
-
 
       - name: Get Instance Public IP
         run: |
