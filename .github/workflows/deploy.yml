@@ -53,8 +53,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Wait for EC2 to be Ready
-        run: sleep 60  # Wait for instance to initialize
+      # - name: Wait for EC2 to be Ready
+      #   run: sleep 60  # Wait for instance to initialize
 
       - name: Install SSH Key
         run: |
