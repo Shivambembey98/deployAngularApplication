@@ -5,7 +5,7 @@ on:
 
 jobs:
   deploy:
-    name: Deploy Angular App on EC2
+    name: Deploy EC2 and Angular App
     runs-on: ubuntu-latest
 
     steps:
@@ -44,6 +44,9 @@ jobs:
           echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
           echo "EC2 Public IP: $PUBLIC_IP"
         working-directory: ./terraform
+
+      - name: Wait for EC2 to be Ready
+        run: sleep 60  # Give some time for the instance to start
 
       - name: Install SSH Key
         run: |
