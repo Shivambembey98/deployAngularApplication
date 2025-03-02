@@ -6,6 +6,8 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    outputs:
+      public_ip: ${{ steps.get-ip.outputs.public_ip }}  # Store Public IP as output
 
     steps:
       - name: Checkout repository
@@ -29,19 +31,22 @@ jobs:
 
       - name: Plan Terraform
         run: terraform plan
-        working-directory: ./terraform
+        working-directory: ./terraform  
 
       - name: Apply Terraform
         run: terraform apply -auto-approve
         working-directory: ./terraform
 
-      - name: Debug Terraform Output
-        run: terraform output  
+      - name: Debug Terraform State
+        run: terraform show
+        working-directory: ./terraform
 
       - name: Get EC2 Public IP
-        run: |
-          PUBLIC_IP=$(terraform output -raw instance_public_ip 2>/dev/null || terraform output instance_public_ip | tr -d '"')
-          echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
+        id: get-ip
+        run: echo "public_ip=$(terraform output -raw instance_public_ip)" >> $GITHUB_ENV
+        working-directory: ./terraform
+
+      
 
 
 
