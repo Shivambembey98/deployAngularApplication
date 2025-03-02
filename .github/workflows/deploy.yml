@@ -1,0 +1,78 @@
+name: Deploy EC2 and Angular App
+
+on:
+  workflow_dispatch:
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: latest
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: ./terraform
+
+      - name: Plan Terraform
+        run: terraform plan
+        working-directory: ./terraform
+
+      - name: Apply Terraform
+        run: terraform apply -auto-approve
+        working-directory: ./terraform
+
+      - name: Get EC2 Public IP
+        id: get-ip
+        run: echo "PUBLIC_IP=$(terraform output -raw public_ip)" >> $GITHUB_ENV
+        working-directory: ./terraform
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: terraform  # Ensure EC2 is created first
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Wait for EC2 to be Ready
+        run: sleep 60  # Wait for instance to initialize
+
+      - name: Install Docker on EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.AWS_PRIVATE_KEY }} ubuntu@${{ env.PUBLIC_IP }} << 'EOF'
+          sudo apt update
+          sudo apt install -y docker.io
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          EOF
+
+      - name: Copy Angular App Files to EC2
+        run: |
+          scp -o StrictHostKeyChecking=no -i ${{ secrets.AWS_PRIVATE_KEY }} -r ./ ubuntu@${{ env.PUBLIC_IP }}:/home/ubuntu/app
+
+      - name: Build & Run Angular App in Docker
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.AWS_PRIVATE_KEY }} ubuntu@${{ env.PUBLIC_IP }} << 'EOF'
+          cd /home/ubuntu/app
+          echo "Building Docker Image..."
+          docker build -t angular-app .
+          echo "Running Angular App..."
+          docker run -d -p 8080:80 angular-app
+          EOF
+
+      - name: Deployment Successful
+        run: echo "Application is running at http://${{ env.PUBLIC_IP }}:8080"
