@@ -37,6 +37,9 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./terraform
 
+      - name: Wait for EC2 to be Ready
+        run: sleep 120  # Wait for instance to initialize
+
       - name: Fetching public ip of the ec2 instance
         run : terraform output -raw instance_public_ip
 
