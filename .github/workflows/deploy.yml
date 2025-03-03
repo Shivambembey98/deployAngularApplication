@@ -51,31 +51,30 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            # Navigate to home directory
-            cd ~
+            # Update system
+            sudo apt update -y
 
-            # Install Docker if not installed
+            # Ensure Docker is installed
             if ! command -v docker &> /dev/null; then
               echo "Docker is not installed. Installing..."
-              sudo apt update
               sudo apt install -y docker.io
               sudo systemctl start docker
               sudo systemctl enable docker
               sudo usermod -aG docker $USER
             fi
 
-            # Remove old container if it exists
-            docker stop angular-app || true
-            docker rm angular-app || true
-
-            # Remove old image
-            docker rmi angular-app || true
-
-            # Clone the repository if not already present
-            cd ~/angular-app || git clone https://github.com/Shivambembey98/angular-app.git ~/angular-app
-            cd ~/angular-app
+            # Clone the repository
+            cd ~
+            if [ ! -d "deployAngularApplication" ]; then
+              git clone https://github.com/Shivambembey98/deployAngularApplication.git
+            fi
+            cd deployAngularApplication
             git pull origin main
 
-            # Build and run the Angular app inside a Docker container
-            docker build -t angular-app .
-            docker run -d -p 8080:80 --name angular-app angular-app
+            # Build and run the Docker container
+            docker stop angular-calculator || true
+            docker rm angular-calculator || true
+            docker rmi angular-calculator || true
+
+            docker build -t angular-calculator .
+            docker run -d -p 8080:80 --name angular-calculator angular-calculator
