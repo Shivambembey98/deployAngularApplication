@@ -36,9 +36,6 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./terraform
 
-      - name: Wait for EC2 to be Ready
-        run: sleep 60  # Wait for instance to initialize
-
   deploy:
     needs: terraform
     runs-on: ubuntu-latest
@@ -56,7 +53,6 @@ jobs:
           script: |
             # Update system
             sudo apt update -y
-
             # Ensure Docker is installed
             if ! command -v docker &> /dev/null; then
               echo "Docker is not installed. Installing..."
@@ -64,10 +60,7 @@ jobs:
               sudo systemctl start docker
               sudo systemctl enable docker
               sudo usermod -aG docker $USER
-              newgrp docker
-
             fi
-
             # Clone the repository
             cd ~
             if [ ! -d "deployAngularApplication" ]; then
@@ -75,12 +68,9 @@ jobs:
             fi
             cd deployAngularApplication
             git pull origin main
-
             # Build and run the Docker container
             docker stop angular-calculator || true
             docker rm angular-calculator || true
             docker rmi angular-calculator || true
-            docker system prune -a || true
-
             docker build -t angular-calculator .
             docker run -d -p 8080:80 --name angular-calculator angular-calculator
