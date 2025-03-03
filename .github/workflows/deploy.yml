@@ -45,7 +45,7 @@ jobs:
 
       - name: Fetching Public IP of EC2 Instance
         id: get_ip
-        run: echo "EC2_HOST=$(terraform output -raw instance_public_ip)" >> $GITHUB_ENV
+        run: terraform output -raw instance_public_ip
         working-directory: ./terraform
 
   deploy:
