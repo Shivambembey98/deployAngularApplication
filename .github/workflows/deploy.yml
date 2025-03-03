@@ -75,6 +75,7 @@ jobs:
             docker stop angular-calculator || true
             docker rm angular-calculator || true
             docker rmi angular-calculator || true
+            docker system prune -a || true
 
             docker build -t angular-calculator .
             docker run -d -p 8080:80 --name angular-calculator angular-calculator
