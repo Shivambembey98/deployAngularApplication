@@ -37,6 +37,9 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./terraform
 
+      - name: checking statefile
+        run: terraform state list
+
       - name: Fetching public ip of the ec2 instance
         run : terraform output -raw instance_public_ip
 
