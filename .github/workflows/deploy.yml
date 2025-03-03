@@ -39,14 +39,7 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./terraform
 
-      - name: Checking state file
-        run: terraform state list
-        working-directory: ./terraform
-
-      - name: Fetching Public IP of EC2 Instance
-        id: get_ip
-        run: terraform output -raw instance_public_ip
-        working-directory: ./terraform
+    
 
   deploy:
     needs: terraform  # This job runs AFTER Terraform completes
