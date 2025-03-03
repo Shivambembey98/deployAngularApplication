@@ -9,10 +9,15 @@ resource "aws_instance" "calculatorAngular" {
 
   # Attach existing security group
   vpc_security_group_ids = ["sg-0b6450d582b178cc2"] # Your actual Security Group ID
-  associate_public_ip_address = true
 
   tags = {
     Name = "calculatorAngular"
   }
+}
+
+# Attach existing Elastic IP to the instance
+resource "aws_eip_association" "eip_assoc" {
+  instance_id   = aws_instance.calculatorAngular.id
+  allocation_id = "eipalloc-12345678" # Replace with your actual Elastic IP allocation ID
 }
 
