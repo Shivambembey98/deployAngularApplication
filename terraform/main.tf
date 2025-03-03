@@ -18,6 +18,6 @@ resource "aws_instance" "calculatorAngular" {
 # Attach existing Elastic IP to the instance
 resource "aws_eip_association" "eip_assoc" {
   instance_id   = aws_instance.calculatorAngular.id
-  allocation_id = "eipalloc-12345678" # Replace with your actual Elastic IP allocation ID
+  allocation_id = "eipalloc-0f603ac2ec5663b67" # Replace with your actual Elastic IP allocation ID
 }
 
