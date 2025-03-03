@@ -36,6 +36,9 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./terraform
 
+      - name: Wait for EC2 to be Ready
+        run: sleep 60  # Wait for instance to initialize
+
   deploy:
     needs: terraform
     runs-on: ubuntu-latest
