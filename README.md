@@ -1,59 +1,33 @@
-# CalculatorApp
+Project Workflow: Deploying Angular Calculator with Terraform, Docker & GitHub Actions
+Overview
+This project automates the deployment of an Angular Calculator application on an AWS EC2 instance using Terraform for infrastructure provisioning, Docker for containerization, and GitHub Actions for CI/CD automation. The workflow is structured into two jobs:
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.0.
+Terraform Job: Creates an EC2 instance and assigns an Elastic IP.
+Deployment Job: SSHs into the EC2 instance, sets up Docker, builds the Angular application, and runs it inside a container.
+Step-by-Step Breakdown
+1️⃣ Job 1: Provisioning AWS Infrastructure with Terraform
+📌 Purpose: Creates an AWS EC2 instance, attaches an Elastic IP, and ensures a stable infrastructure for deployment.
 
-## Development server
+Key Steps:
+Checkout the repository: Pulls the latest Terraform code from GitHub.
+Setup Terraform: Installs and initializes Terraform.
+Configure AWS Credentials: Uses GitHub secrets to authenticate AWS access.
+Check AWS S3 Access: Ensures the S3 backend is reachable for Terraform state management.
+Initialize Terraform: Runs terraform init to initialize the project with the backend.
+Plan Terraform Execution: Runs terraform plan to preview changes before applying them.
+Apply Terraform Execution: Runs terraform apply -auto-approve to create an EC2 instance and attach an Elastic IP.
+Outputs the Elastic IP: The public IP of the created instance is stored for the next job.
+🚀 At the end of this step, an AWS EC2 instance is up and running with an Elastic IP.
 
-To start a local development server, run:
+2️⃣ Job 2: Deploying the Angular Application via Docker
+📌 Purpose: Sets up Docker, pulls the Angular application from GitHub, builds it into a container, and runs it on the EC2 instance.
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Key Steps:
+SSH into EC2: Connects to the newly created EC2 instance using the Elastic IP.
+Ensure Docker is Installed: Installs Docker if it’s not already installed.
+Fix Docker Permissions Issue: Runs sudo chmod 666 /var/run/docker.sock to avoid permission errors.
+Remove Old Containers & Images: Stops and removes any previous deployments of the Angular Calculator.
+Clone the Latest Repository: Pulls the latest version of the Angular application from GitHub.
+Build the Docker Image: Runs docker build -t angular-calculator . to create a container image.
+Run the Container: Runs docker run -d --name angular-calculator -p 8080:80 angular-calculator to deploy the Angular app and expose it on port 8080.
+🚀 At the end of this step, the Angular Calculator is live on the EC2 instance and accessible via its Elastic IP on port 8080.
